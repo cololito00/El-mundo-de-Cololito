@@ -1,0 +1,503 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#09091c">
+<title>El mundo de Cololito 🎮</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ color:white;
+ background:radial-gradient(ellipse at top,#21134a,#09091c 65%);
+ min-height:100vh;
+ overflow-x:hidden;
+}
+body:before{
+ content:"";
+ position:fixed;inset:0;
+ background-image:
+ radial-gradient(2px 2px at 20% 30%,#fff 50%,transparent),
+ radial-gradient(2px 2px at 70% 60%,#a78bfa 50%,transparent),
+ radial-gradient(2px 2px at 40% 80%,#fff 50%,transparent);
+ background-size:180px 180px;
+ opacity:.4;pointer-events:none;
+}
+header{text-align:center;padding:40px 15px 20px}
+h1{
+ font-size:clamp(30px,8vw,48px);
+ margin:10px 0;
+ color:#e9d5ff;
+ text-shadow:0 0 12px #a855f7,0 0 30px #7c3aed;
+}
+.subtitle{color:#c4b5fd}
+.container{max-width:950px;margin:auto;padding:15px}
+.panel{
+ background:#ffffff0b;
+ border:1px solid #a78bfa55;
+ border-radius:22px;
+ padding:22px;
+ box-shadow:0 0 25px #7c3aed22;
+ backdrop-filter:blur(12px);
+}
+.welcome{text-align:center;margin-bottom:25px}
+button{
+ border:1px solid #c084fc;
+ border-radius:13px;
+ padding:13px 18px;
+ color:white;
+ background:linear-gradient(135deg,#7c3aed,#4f46e5);
+ font-size:15px;
+ font-weight:bold;
+ cursor:pointer;
+ transition:.2s;
+}
+button:active{transform:scale(.95)}
+button:hover{filter:brightness(1.2)}
+button:disabled{opacity:.35;cursor:not-allowed}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:15px;
+ margin-top:20px;
+}
+.game{
+ text-align:center;
+ min-height:155px;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ gap:8px;
+ cursor:pointer;
+ transition:.25s;
+}
+.game:hover{transform:translateY(-5px);border-color:#e879f9}
+.game .emoji{font-size:38px}
+.game h3{margin:4px;font-size:17px}
+.game p{margin:0;color:#c4b5fd;font-size:12px}
+.game.done{border-color:#4ade80}
+.lock{font-size:12px;color:#86efac}
+.stats{
+ display:flex;justify-content:space-around;
+ gap:10px;text-align:center;margin:20px 0;
+}
+.stat strong{display:block;color:#e9d5ff;font-size:24px}
+.stat span{font-size:12px;color:#c4b5fd}
+#screen{display:none;margin-top:20px}
+#screen h2{text-align:center;color:#e9d5ff}
+.game-area{text-align:center;min-height:230px}
+.big{font-size:55px;margin:15px}
+.back{background:#312e81;margin-top:15px}
+.small{font-size:13px;color:#c4b5fd}
+.arena{
+ display:grid;grid-template-columns:repeat(4,1fr);
+ gap:10px;margin:20px auto;max-width:420px;
+}
+.cell{
+ background:#ffffff12;border:1px solid #a78bfa55;
+ border-radius:13px;min-height:65px;
+ display:grid;place-items:center;font-size:32px;
+}
+.cell button{width:100%;height:100%;min-height:65px;padding:5px;font-size:30px}
+.answers{display:grid;gap:10px;max-width:500px;margin:20px auto}
+.answers button{background:#312e81}
+.maze{
+ display:grid;grid-template-columns:repeat(5,48px);
+ justify-content:center;gap:4px;margin:20px auto;
+}
+.tile{
+ width:48px;height:48px;border-radius:7px;
+ display:grid;place-items:center;background:#30265a;
+ font-size:22px;
+}
+.wall{background:#09091c;border:1px solid #514477}
+.controls{display:grid;grid-template-columns:repeat(3,55px);gap:5px;justify-content:center}
+.controls button{padding:12px 5px}
+.reward{
+ display:none;text-align:center;margin-top:25px;
+ border:1px solid #f0abfc;
+ box-shadow:0 0 25px #d946ef55;
+}
+.reward h2{color:#f0abfc}
+footer{text-align:center;padding:35px 10px;color:#a78bfa;font-size:12px}
+@media(max-width:430px){
+ .grid{gap:10px}
+ .panel{padding:15px}
+ .game{min-height:140px}
+ .maze{grid-template-columns:repeat(5,42px)}
+ .tile{width:42px;height:42px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div style="font-size:35px">🌌 🎮 ✨</div>
+ <h1>EL MUNDO DE COLOLITO</h1>
+ <p class="subtitle">Un universo lleno de juegos y sorpresas.</p>
+</header>
+
+<main class="container">
+
+ <section class="panel welcome" id="home">
+  <h2>¡Bienvenida a mi mundo! 💜</h2>
+  <p>¿Estás lista para poner a prueba tus habilidades?</p>
+  <p class="small">Completá los cinco desafíos y descubrí el secreto final.</p>
+
+  <div class="stats">
+   <div class="stat"><strong id="completed">0/5</strong><span>Juegos ganados</span></div>
+   <div class="stat"><strong id="points">0</strong><span>Puntos</span></div>
+   <div class="stat"><strong id="record">0</strong><span>Récord</span></div>
+  </div>
+
+  <button onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">
+   🚀 EMPEZAR A JUGAR
+  </button>
+ </section>
+
+ <section id="games" class="grid">
+  <article class="panel game" onclick="openGame('hearts')">
+   <div class="emoji">❤️</div>
+   <h3>Atrapa corazones</h3>
+   <p>¡Conseguí 10 corazones!</p>
+   <span class="lock" id="status-hearts"></span>
+  </article>
+
+  <article class="panel game" onclick="openGame('memory')">
+   <div class="emoji">🧠</div>
+   <h3>Memoria</h3>
+   <p>Encontrá todas las parejas.</p>
+   <span class="lock" id="status-memory"></span>
+  </article>
+
+  <article class="panel game" onclick="openGame('quiz')">
+   <div class="emoji">😏</div>
+   <h3>¿Cuánto me conocés?</h3>
+   <p>Respondé las preguntas.</p>
+   <span class="lock" id="status-quiz"></span>
+  </article>
+
+  <article class="panel game" onclick="openGame('maze')">
+   <div class="emoji">🗝️</div>
+   <h3>Laberinto</h3>
+   <p>Encontrá la salida.</p>
+   <span class="lock" id="status-maze"></span>
+  </article>
+
+  <article class="panel game" onclick="openGame('catch')">
+   <div class="emoji">🎯</div>
+   <h3>Atrapa al personaje</h3>
+   <p>¡No dejes que escape!</p>
+   <span class="lock" id="status-catch"></span>
+  </article>
+ </section>
+
+ <section id="screen" class="panel">
+  <h2 id="gameTitle"></h2>
+  <div id="gameArea" class="game-area"></div>
+  <button class="back" onclick="goHome()">⬅ Volver al menú</button>
+ </section>
+
+ <section class="panel reward" id="reward">
+  <div class="big">🏆💜✨</div>
+  <h2>¡DESBLOQUEASTE EL SECRETO!</h2>
+  <p>¡Completaste todos los desafíos!</p>
+  <p>Hay algo que quiero decirte...</p>
+  <button onclick="showSecret()">🎁 DESCUBRIR SORPRESA</button>
+  <div id="secret" style="display:none">
+   <h2>💗 ¡SORPRESA! 💗</h2>
+   <p>¡Sos increíble! Gracias por formar parte de mi mundo.</p>
+   <p>Espero que te hayas divertido muchísimo. ❤️</p>
+   <p>— Cololito</p>
+  </div>
+ </section>
+
+</main>
+
+<footer>EL MUNDO DE COLOLITO · Hecho con 💜</footer>
+
+<script>
+const games=["hearts","memory","quiz","maze","catch"];
+let completed=JSON.parse(localStorage.getItem("cololitoDone")||"[]");
+let total=Number(localStorage.getItem("cololitoPoints")||0);
+let record=Number(localStorage.getItem("cololitoRecord")||0);
+let currentTimer=null;
+let active=false;
+
+function update(){
+ document.getElementById("completed").textContent=completed.length+"/5";
+ document.getElementById("points").textContent=total;
+ document.getElementById("record").textContent=record;
+
+ games.forEach(id=>{
+  const done=completed.includes(id);
+  document.getElementById("status-"+id).textContent=done?"✓ COMPLETADO":"POR JUGAR";
+  document.querySelector('[onclick="openGame(\''+id+'\')"]').classList.toggle("done",done);
+ });
+
+ document.getElementById("reward").style.display=
+ completed.length===5?"block":"none";
+
+ localStorage.setItem("cololitoDone",JSON.stringify(completed));
+ localStorage.setItem("cololitoPoints",total);
+ localStorage.setItem("cololitoRecord",record);
+}
+
+function award(id,points){
+ if(completed.includes(id))return;
+ completed.push(id);
+ total+=points;
+ record=Math.max(record,total);
+ update();
+ document.getElementById("gameArea").innerHTML=
+ `<div class="big">🏆</div>
+ <h2>¡DESAFÍO COMPLETADO!</h2>
+ <p>Ganaste ${points} puntos.</p>
+ <p>¡Seguí jugando para desbloquear el secreto!</p>`;
+ active=false;
+ clearInterval(currentTimer);
+}
+
+function goHome(){
+ clearInterval(currentTimer);
+ active=false;
+ document.getElementById("screen").style.display="none";
+ document.getElementById("home").style.display="block";
+ document.getElementById("games").style.display="grid";
+ update();
+}
+
+function openGame(id){
+ clearInterval(currentTimer);
+ active=true;
+ document.getElementById("home").style.display="none";
+ document.getElementById("games").style.display="none";
+ document.getElementById("screen").style.display="block";
+ document.getElementById("gameTitle").textContent=
+ ({
+ hearts:"❤️ Atrapa corazones",
+ memory:"🧠 Juego de memoria",
+ quiz:"😏 ¿Cuánto me conocés?",
+ maze:"🗝️ El laberinto",
+ catch:"🎯 Atrapa al personaje"
+ })[id];
+
+ if(completed.includes(id)){
+  document.getElementById("gameArea").innerHTML=
+  "<div class='big'>🏆</div><p>¡Ya completaste este desafío!</p>";
+  return;
+ }
+ if(id==="hearts")startHearts();
+ if(id==="memory")startMemory();
+ if(id==="quiz")startQuiz();
+ if(id==="maze")startMaze();
+ if(id==="catch")startCatch();
+}
+
+// JUEGO 1: ATRAPA CORAZONES
+function startHearts(){
+ let count=0,seconds=25,position=0;
+ const area=document.getElementById("gameArea");
+
+ function draw(){
+  position=Math.floor(Math.random()*16);
+  area.innerHTML=`
+   <p>¡Tocá los corazones antes de que termine el tiempo!</p>
+   <h3>❤️ ${count}/10 · ⏱️ ${seconds}s</h3>
+   <div class="arena">
+   ${Array.from({length:16},(_,i)=>`
+    <div class="cell">
+    ${i===position?'<button onclick="heartHit()">❤️</button>':' '}
+    </div>`).join("")}
+   </div>`;
+ }
+ window.heartHit=function(){
+  if(!active)return;
+  count++;
+  if(count>=10){award("hearts",100);return;}
+  draw();
+ };
+ draw();
+ currentTimer=setInterval(()=>{
+  if(!active)return;
+  seconds--;
+  if(seconds<=0){
+   clearInterval(currentTimer);
+   area.innerHTML=`<div class="big">⏰</div><p>¡Se acabó el tiempo!</p><button onclick="startHearts()">Intentar de nuevo</button>`;
+   return;
+  }
+  draw();
+ },1000);
+}
+
+// JUEGO 2: MEMORIA
+function startMemory(){
+ const icons=["💜","⭐","🎮","🍀","🌙","🦋"];
+ let cards=[...icons,...icons].sort(()=>Math.random()-.5);
+ let first=null,locked=false,found=0,moves=0;
+ const area=document.getElementById("gameArea");
+
+ function draw(){
+  area.innerHTML=`
+   <p>Encontrá las seis parejas.</p>
+   <p>Movimientos: ${moves}</p>
+   <div class="arena">
+   ${cards.map((c,i)=>`
+    <div class="cell">
+    <button onclick="flip(${i})" style="background:${cards[i].found?'#14532d':'#312e81'}">
+    ${cards[i].open||cards[i].found?c:"❔"}
+    </button></div>`).join("")}
+   </div>`;
+ }
+ cards=cards.map(c=>({icon:c,open:false,found:false}));
+ window.flip=function(i){
+  if(!active||locked||cards[i].open||cards[i].found)return;
+  cards[i].open=true;
+  draw();
+  if(first===null){first=i;return;}
+  moves++;
+  const a=first,b=i;
+  first=null;
+  if(cards[a].icon===cards[b].icon){
+   cards[a].found=cards[b].found=true;
+   found++;
+   draw();
+   if(found===6)award("memory",150);
+  }else{
+   locked=true;
+   setTimeout(()=>{
+    cards[a].open=cards[b].open=false;
+    locked=false;
+    draw();
+   },800);
+  }
+ };
+ draw();
+}
+
+// JUEGO 3: QUIZ
+function startQuiz(){
+ const questions=[
+  {q:"¿Qué es lo más importante en una amistad?",a:["La confianza","El dinero","Competir"],correct:0},
+  {q:"¿Qué elegirías para pasar una tarde?",a:["Una aventura","Aburrirme","Dormir todo el día"],correct:0},
+  {q:"¿Qué vale más?",a:["Los buenos recuerdos","Los regalos caros","Los likes"],correct:0},
+  {q:"¿Qué no puede faltar en una amistad?",a:["Las risas","Las peleas","Los secretos malos"],correct:0},
+  {q:"¿Estás lista para el siguiente desafío?",a:["¡Obvio!","No sé","Me rindo"],correct:0}
+ ];
+ let index=0,score=0;
+ const area=document.getElementById("gameArea");
+
+ function draw(){
+  if(index>=questions.length){
+   if(score>=3)award("quiz",score*30);
+   else area.innerHTML=`<div class="big">😅</div><p>Conseguiste ${score}/5.</p><button onclick="startQuiz()">Volver a intentar</button>`;
+   return;
+  }
+  const q=questions[index];
+  area.innerHTML=`
+   <p>Pregunta ${index+1} de 5</p>
+   <h3>${q.q}</h3>
+   <div class="answers">
+   ${q.a.map((a,i)=>`<button onclick="answerQuiz(${i})">${a}</button>`).join("")}
+   </div>`;
+ }
+ window.answerQuiz=function(i){
+  if(!active)return;
+  if(i===questions[index].correct)score++;
+  index++;
+  draw();
+ };
+ draw();
+}
+
+// JUEGO 4: LABERINTO
+function startMaze(){
+ const map=[
+  "S0001",
+  "11001",
+  "00001",
+  "01110",
+  "0000E"
+ ];
+ let x=0,y=0,moves=0;
+ const area=document.getElementById("gameArea");
+
+ function draw(){
+  area.innerHTML=`
+   <p>¡Encontrá la salida! Usá las flechas.</p>
+   <p>Movimientos: ${moves}</p>
+   <div class="maze">
+   ${map.map((row,j)=>row.split("").map((v,i)=>{
+    let wall=v==="1";
+    let symbol=(x===i&&y===j)?"🧍":v==="E"?"🚪":wall?"":"";
+    return `<div class="tile ${wall?"wall":""}">${symbol}</div>`;
+   }).join("")).join("")}
+   </div>
+   <div class="controls">
+    <span></span><button onclick="moveMaze(0,-1)">⬆️</button><span></span>
+    <button onclick="moveMaze(-1,0)">⬅️</button>
+    <button onclick="moveMaze(0,1)">⬇️</button>
+    <button onclick="moveMaze(1,0)">➡️</button>
+   </div>`;
+ }
+ window.moveMaze=function(dx,dy){
+  if(!active)return;
+  let nx=x+dx,ny=y+dy;
+  if(nx<0||nx>=5||ny<0||ny>=5||map[ny][nx]==="1")return;
+  x=nx;y=ny;moves++;
+  if(map[y][x]==="E"){award("maze",150);return;}
+  draw();
+ };
+ draw();
+}
+
+// JUEGO 5: ATRAPA AL PERSONAJE
+function startCatch(){
+ let hits=0,seconds=20,position=0;
+ const area=document.getElementById("gameArea");
+
+ function draw(){
+  position=Math.floor(Math.random()*16);
+  area.innerHTML=`
+   <p>¡Tocá al personaje 10 veces!</p>
+   <h3>🎯 ${hits}/10 · ⏱️ ${seconds}s</h3>
+   <div class="arena">
+   ${Array.from({length:16},(_,i)=>`
+    <div class="cell">
+    ${i===position?'<button onclick="catchHit()">👾</button>':' '}
+    </div>`).join("")}
+   </div>`;
+ }
+ window.catchHit=function(){
+  if(!active)return;
+  hits++;
+  if(hits>=10){award("catch",100);return;}
+  draw();
+ };
+ draw();
+ currentTimer=setInterval(()=>{
+  if(!active)return;
+  seconds--;
+  if(seconds<=0){
+   clearInterval(currentTimer);
+   area.innerHTML=`<div class="big">😵</div><p>¡Se escapó! Intentá otra vez.</p><button onclick="startCatch()">Reintentar</button>`;
+   return;
+  }
+  draw();
+ },1000);
+}
+
+function showSecret(){
+ document.getElementById("secret").style.display="block";
+}
+update();
+</script>
+
+</body>
+</html>
